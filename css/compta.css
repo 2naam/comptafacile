@@ -1,0 +1,9 @@
+.fond{
+	background-image: url("../img/fond.jpg");
+	background-size: cover;
+}
+
+.main-title{
+	text-align:center;
+	color:white;
+}
