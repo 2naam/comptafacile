@@ -12,6 +12,9 @@
 
 <?php
 
+$email = $_POST['email'];
+$pseudo = $_POST['pseudo'];
+$password = $_POST['password'];
 
 $formulaire = (nl2br($_POST['email'] $_POST['pseudo'] $_POST['password']));
 
