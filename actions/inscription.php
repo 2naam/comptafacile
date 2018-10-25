@@ -41,8 +41,8 @@ if (($_POST['password']) ) {
 
 
 // Ecriture du fichier  
-if ( !fwrite($monfichier, $contenu)) {
-  echo "Impossible de vous inscrire ($filename)";
+if ( !fwrite($monfichier, $formulaire)) {
+  echo "Impossible de vous inscrire ";
   exit;
 
 
