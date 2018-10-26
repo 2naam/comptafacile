@@ -17,9 +17,9 @@ $Erreurs = array();
 $pseudo = null;
 $password = null;
 $email = null;
-if(isset($_POST['pseudo']) ){$pseudo= $_POST['pseudo'];}
-if(isset($_POST['password']) ){$password= $_POST['password'];}
-if(isset($_POST['email']) ){$email= $_POST['email'];}
+if(isset($_POST['pseudo']) ){$pseudo=trim($_POST['pseudo']);}
+if(isset($_POST['password']) ){$password=trim($_POST['password']);}
+if(isset($_POST['email']) ){$email= trim($_POST['email']);}
 
 
 //Chemin du fichier utilisateurs
@@ -27,8 +27,6 @@ $filePath = '../data/utilisateurs.txt';
 
 // On ouvre le fichier ou on le crée s'il existe pas
 $userFile = fopen("".$filePath, 'a+');
-fseek($userFile, 0);
-
 
 // Test de l'attribution de l'email         //////  A COMPLETER  //////
 if ($email != null) {
@@ -39,18 +37,20 @@ if ($email != null) {
 		$line = fgets($userFile);
         //Separation de la ligne sur le charactere ','
 		$splittedLine = explode(",", $line);
-		//Test de la présence du pseudo en deuxième position de la ligne
-		if ($splittedLine[1] == $email){
+		$EmailBase = trim($splittedLine[0]);
+		//Test de la présence de l'email en deuxième position de la ligne
+		if ($EmailBase == $email){
 			$emailtrouve = true;
 		}
     }
 	if($emailtrouve){
 		echo "<div>Email déjà attribuée </div>";
 		$Erreurs['user'] = "Email déjà attribuée ! ";
+		fputs($userFile,$email);
+		fputs($userFile, ',');
 	} else {
 		echo "<div>Email définie ! </div>";
-		rewind($userFile);
-		fputs($userFile, "\r\n".$email );
+		fputs($userFile,$email);
 		fputs($userFile, ',');
 	}	
 } else {
@@ -67,8 +67,9 @@ if ($pseudo != null) {
 		$line = fgets($userFile);
         //Separation de la ligne sur le charactere ','
 		$splittedLine = explode(",", $line);
+		$PseudoBase = trim($splittedLine[1]);
 		//Test de la présence du pseudo en deuxième position de la ligne
-		if ($splittedLine[1] == $pseudo ){
+		if ($PseudoBase == $pseudo ){
 			$pseudotrouve = true;
 		}
     }
@@ -77,8 +78,7 @@ if ($pseudo != null) {
 		$Erreurs['user'] = "Pseudo déjà attribué ! ";
 	} else {
 		echo "<div>Pseudo définie ! </div>";
-		rewind($userFile);
-		fputs($userFile, $pseudo);
+		fputs($userFile,$pseudo);
 		fputs($userFile, ',');
 	}	
 } else {
@@ -89,8 +89,7 @@ if ($pseudo != null) {
 
 if ($password != null) {
 	echo "<div>Mot de passe défini ! </div>";
-	rewind($userFile);
-	fputs($userFile, $password);
+	fputs($userFile,$password."\r\n");
 	} else {
 		echo "<div>Mot de passe non défini ! </div>";
 		$Erreurs['password'] = "Mot de passe non défini ! "; }

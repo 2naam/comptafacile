@@ -4,8 +4,8 @@
 //récupération des champs de formulaire
 $pseudo = null;
 $password = null;
-if(isset($_POST['pseudo']) ){$pseudo= $_POST['pseudo'];}
-if(isset($_POST['password']) ){$password= $_POST['password'];}
+if(isset($_POST['pseudo']) ){$pseudo=trim($_POST['pseudo']);}
+if(isset($_POST['password']) ){$password=trim($_POST['password']);}
 
 //Definition des messages d'erreur
 $Erreurs = array();
@@ -14,72 +14,46 @@ $Erreurs = array();
 $filePath = '../data/utilisateurs.txt';
 
 // On ouvre le fichier ou on le crée s'il existe pas
-$userFile = fopen("".$filePath, 'r');
-
-// Replace le pointeur au début du fichier 
-fseek($userFile, 0);
+$userFile = fopen("".$filePath, 'a+');
 
 // Verification du pseudo 
-
-if ($pseudo != null) {
+if(($pseudo != null && $pseudo != "") && ($password != null && $password != "")) {
 	$pseudotrouve = false;
-	
+	$passwordMatch = false;	
 	// Test de l'attribution du pseudo 
 	while(!feof($userFile)) {
         //Lecture d'une ligne
 		$line = fgets($userFile);
         //Separation de la ligne sur le charactere ','
 		$splittedLine = explode(",", $line);
+		$PseudoBase = trim($splittedLine[1]);
+		$PasswordBase = trim($splittedLine[2]);
 		//Test de la présence du pseudo en deuxième position de la ligne
-		if ($splittedLine[1] == $pseudo){
+		if ($PseudoBase == $pseudo){
 			$pseudotrouve = true;
+			if($PasswordBase == $password){
+				$passwordMatch = true;
+			}
 		}
     }
 	if($pseudotrouve){
 		echo "<div>Pseudo reconnu</div>";
+		if($passwordMatch){
+			echo "<div>Mot de passe ok</div>";
+		} else {
+			$Erreurs['password'] = "Mot de passe erroné ";
+			echo "<div>Mot de passe faux !</div>";
+			echo "<div>Cassez vous d'ici!</div>";
+		}
 	} else {
 		echo "<div>Pseudo non reconnu</div>";
 		echo "<div>Cassez vous d'ici!</div>";
 		$Erreurs['user'] = "Pseudo inconnu ! ";
 	}	
 } else {
-		$Erreurs['user'] = "Utilisateur non défini ! ";
+		$Erreurs['user'] = "Veuillez saisir tous vos identifiants ! ";
+		echo "<div>Veuillez saisir tous vos identifiants !</div>";
 }
-
-fseek($userFile, 0);
-
-// Verification du mot de passe
-
-if ($password != null) {
-	$passwordtrouve = false;
-	
-	// Replace le pointeur au début du fichier 
-	fseek($userFile, 0);
-	
-	// Test de la validité du mot de passe
-	while(!feof($userFile)) {
-        //Lecture d'une ligne
-		$line = fgets($userFile);
-        //Separation de la ligne sur le charactere ','
-		$splittedLine = explode(",", $line);
-		//Test de la validité du mot de passe correspondant au pseudo 
-		if ($splittedLine[1] == $pseudo && $splittedLine[2] == $password){
-			$passwordtrouve = true;
-		}
-    }
-	if($passwordtrouve){
-		echo "<div>Mot de passe reconnu</div>";
-		echo "<div>Vous êtes connecté !</div>";
-	} else {
-		echo "<div>Mot de passe non reconnu</div>";
-		echo "<div>Cassez vous d'ici!</div>";
-		$Erreurs['password'] = "Mot de passe inconnu ! ";
-	}	
-} else {
-		$Erreurs['password'] = "Mot de passe incorrect ! ";
-}
-
-fseek($userFile, 0);
 
 // On ferme le fichier
 fclose($userFile);
