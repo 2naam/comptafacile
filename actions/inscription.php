@@ -14,14 +14,53 @@
 
 $Erreurs = array();
 
+$email = null;
 $pseudo = null;
 $password = null;
-$email = null;
+$password2 = null;
+
+if(isset($_POST['email']) ){$email= trim($_POST['email']);}
 if(isset($_POST['pseudo']) ){$pseudo=trim($_POST['pseudo']);}
 if(isset($_POST['password']) ){$password=trim($_POST['password']);}
-if(isset($_POST['email']) ){$email= trim($_POST['email']);}
+if(isset($_POST['password2']) ){$password2=trim($_POST['password2']);}
 
+/* Test de la Confirmation du mot de passe */
+if ($password != $password2)
+{
+	echo "Confirmation de mot de passe incorrecte";
+	$password2 = null;
+	$Erreurs['password2'] = "Confirmation password erronée ! "; 
+}
+	else 
+{
+		$password2=trim($_POST['password2']);
+}
+	
+/* Test validité Adresse Email (sous la forme abcd1234@abcd123.abc) */
 
+if ( preg_match ( " /^[^\W][a-zA-Z0-9_]+(\.[a-zA-Z0-9_]+)*\@[a-zA-Z0-9_]+(\.[a-zA-Z0-9_]+)*\.[a-zA-Z]{2,4}$/ " , $email))
+{
+	echo "<div> Email valide </div>";
+}
+else
+{
+    echo "<div> Email invalide </div>";
+	$Erreurs['email'] = "Email non valide !";
+}
+
+/* Test validité du Pseudo (Commençant par lettres majuscules 
+ou miniscules ou chiffres entre   */
+
+if ( preg_match ( " \^[a-zA-Z0-9_]{3,8}$\ " , $pseudo ) )
+{
+echo "<div> Pseudo valide <div>";
+}
+else
+{
+    echo "<div> Pseudo invalide </div>";
+	$Erreurs['pseudo'] = "Pseudo non valide !";
+}
+	
 //Chemin du fichier utilisateurs
 $filePath = '../data/utilisateurs.txt';
 
