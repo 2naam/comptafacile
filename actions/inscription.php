@@ -38,7 +38,7 @@ if ($password != $password2)
 	
 /* Test validité Adresse Email (sous la forme abcd1234@abcd123.abc) */
 
-if ( preg_match ( " /^[^\W][a-zA-Z0-9_]+(\.[a-zA-Z0-9_]+)*\@[a-zA-Z0-9_]+(\.[a-zA-Z0-9_]+)*\.[a-zA-Z]{2,4}$/ " , $email))
+if (preg_match("/^([\w-\.]+)@((?:[\w]+\.)+)([a-zA-Z]{2,4})/i", $email))
 {
 	echo "<div> Email valide </div>";
 }
@@ -49,9 +49,9 @@ else
 }
 
 /* Test validité du Pseudo (Commençant par lettres majuscules 
-ou miniscules ou chiffres entre   */
+ou miniscules ou chiffres entre 3 et 8 caractères, underscore autorisé  */
 
-if ( preg_match ( " \^[a-zA-Z0-9_]{3,8}$\ " , $pseudo ) )
+if(preg_match('`^([a-zA-Z0-9-_]{3,8})$`', $pseudo))
 {
 echo "<div> Pseudo valide <div>";
 }
