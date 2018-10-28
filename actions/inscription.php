@@ -1,20 +1,17 @@
+<p>Bienvenue dans l'inscription</p>
 <?php
 require_once('../model/User.php');
 require_once('../tools/FileReader.php');
-
 $user = new User; 
 $fileReader = new FileReader;
 $Erreurs = array();
 $password2 = null;
 //Chemin du fichier utilisateurs
 $filePath = '../data/utilisateurs.txt';
-
-
 if(isset($_POST['email']) ){$user->setEmail(trim($_POST['email']));}
 if(isset($_POST['pseudo']) ){$user->setPseudo(trim($_POST['pseudo']));}
 if(isset($_POST['password']) ){$user->setPassword(trim($_POST['password']));}
 if(isset($_POST['password2']) ){$password2=trim($_POST['password2']);}
-
 //Test validité Adresse Email (sous la forme abcd1234@abcd123.abc)
 if ($user->isEmailValid()) {
 	echo "<div> Email valide </div>";
@@ -73,7 +70,3 @@ if ($user->isEmailValid()) {
 	$Erreurs['email'] = "Email non valide !";
 }
 ?>
-
-<p>Bienvenue dans l'inscription</p>
-
-
