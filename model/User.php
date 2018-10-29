@@ -3,20 +3,25 @@ class User {
     private $email; 
     private $password; 
 	private $pseudo; 
+	private $validEmail;
+	private $validPseudo;
+	private $validPassword;
+
 	
-	function __construct(){
+	
+	public function __construct(){
 		$ctp = func_num_args();
 		$args = func_get_args();
 		switch($ctp)
 		{
 			case 2:
-				$this->pseudo = $args[0];
-				$this->password = $args[1];
+				$this->setPseudo($args[0]);
+				$this->setPassword($args[1]);
 				break;
 			case 3:
-				$this->email = $args[0];
-				$this->pseudo = $args[1];
-				$this->password = $args[2];
+				$this->setEmail($args[0]);
+				$this->setPseudo($args[1]);
+				$this->setPassword($args[2]);
 				break;
 			default:
 				$this->email = "";
@@ -26,56 +31,78 @@ class User {
 		}
 	}
     
-    function setEmail($emailToSet) { 
-        $this->email = $emailToSet; 
+	public function isValidForRegister () : bool {
+		return $this->validEmail && $this->validPseudo && $this->validPassword;
+	}
+	
+	public function isValidForConnect () : bool {
+		return $this->validPseudo && $this->validPassword;
+	}
+	
+    public function setEmail($emailToSet) { 
+        $this->email = $emailToSet;
+		$this->validateEmail();
     }
 	
-	function getEmail() : string { 
+	public function getEmail() : string { 
         return $this->email; 
     }
 	
-	function hasEmail() : bool{
+	public function hasEmail() : bool{
 		return $this->email != null && $this->email != "";
 	}
 	
-	function isEmailValid() : bool{
-		return preg_match("/^([\w-\.]+)@((?:[\w]+\.)+)([a-zA-Z]{2,4})/i", $this->email);
+	private function validateEmail(){
+		$this->validEmail = ($this->hasEmail() && preg_match("/^([\w-\.]+)@((?:[\w]+\.)+)([a-zA-Z]{2,4})/i", $this->email));
 	}
 	
-	function setPseudo($pseudoToSet) { 
+	public function isValidEmail() : bool{
+		return $this->validEmail;
+	}
+	
+	public function setPseudo($pseudoToSet) { 
         $this->pseudo = $pseudoToSet; 
+		$this->validatePseudo();
     }
 	
-	function getPseudo() : string { 
+	public function getPseudo() : string { 
         return $this->pseudo; 
     }
 	
-	function hasPseudo() : bool{
+	public function hasPseudo() : bool{
 		return $this->pseudo != null && $this->pseudo != "";
 	}
 	
-	function isPseudoValid() : bool{
-		return preg_match('`^([a-zA-Z0-9-_]{3,8})$`',$this->pseudo);
+	private function validatePseudo(){
+		$this->validPseudo = $this->hasPseudo() && preg_match('`^([a-zA-Z0-9-_]{3,8})$`',$this->pseudo);
+	}
+	public function isValidPseudo() : bool{
+		return $this->validPseudo;
 	}
 	
-	function setPassword($passwordToSet) { 
+	public function setPassword($passwordToSet) { 
         $this->password = $passwordToSet; 
+		$this->validatePassword();
     }
 	
-	function getPassword() : string { 
+	public function getPassword() : string { 
         return $this->password; 
     }
 	
-	function hasPassword() : bool{
+	public function hasPassword() : bool{
 		return $this->password != null && $this->password != "";
 	}
 	
-	function isPasswordValid() : bool{
-		return preg_match('#^(?=.*[a-z])(?=.*[A-Z])(?=.*[0-9])(?=.*\W).{8,}$#', $this->password);
+	private function validatePassword(){
+		$this->validPassword = $this->hasPassword() && preg_match('#^(?=.*[a-z])(?=.*[A-Z])(?=.*[0-9])(?=.*\W).{8,}$#', $this->password);
 	}
 	
-	function getAsJson() : string{
-		return "{email:\"".$email."\",pseudo:\"".$pseudo."\",password:\"".$password."\"}";
+	public function isValidPassword() : bool{
+		return $this->validPassword;
+	}
+	
+	public function getAsJson() : string{
+		return "{email:\"".$this->email."\",pseudo:\"".$this->pseudo."\",password:\"".$this->password."\"}";
 	}
 } 
 ?> 
