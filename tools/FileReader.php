@@ -2,7 +2,13 @@
 class FileReader { 
     private $filePath; 
 	private $file;
+	private $separateur;
     
+	function __construct($filepath,$separateur){
+		$this->filePath = $filepath; 
+		$this->separateur = $separateur; 
+	}
+	
     function setFilePath($filePathToSet) { 
         $this->filePath = $filePathToSet; 
     }
@@ -21,19 +27,23 @@ class FileReader {
 		fclose($this->file);
 	}
 	
-	function find($element, $position, $separateur){
+	function find($element, $position, $element2, $position2){
 		$this->init();
 		while(!feof($this->file)) {
 			//Lecture d'une ligne
 			$line = fgets($this->file);
 			//Separation de la ligne sur le charactere ','
-			$splittedLine = explode($separateur, $line);
+			$splittedLine = explode($this->separateur, $line);
 			if(isset($splittedLine[$position])){
 				$Element = trim($splittedLine[$position]);
 				//Test de la présence de l'email en deuxième position de la ligne
 				if ($Element == $element){
 					$this->destroy();
-					return true;
+					if ($element2 != null && $element2 != ""){
+						if ($element2 != trim($splittedLine[$position2])){
+							return false;
+						}
+					} return true;
 				} 
 			}
 		}
