@@ -1,8 +1,30 @@
 <?php 
 class User { 
-    private $email = ""; 
-    private $password = ""; 
-	private $pseudo = ""; 
+    private $email; 
+    private $password; 
+	private $pseudo; 
+	
+	function __construct(){
+		$ctp = func_num_args();
+		$args = func_get_args();
+		switch($ctp)
+		{
+			case 2:
+				$this->pseudo = $args[0];
+				$this->password = $args[1];
+				break;
+			case 3:
+				$this->email = $args[0];
+				$this->pseudo = $args[1];
+				$this->password = $args[2];
+				break;
+			default:
+				$this->email = "";
+				$this->pseudo = "";
+				$this->password = "";
+				break;
+		}
+	}
     
     function setEmail($emailToSet) { 
         $this->email = $emailToSet; 
