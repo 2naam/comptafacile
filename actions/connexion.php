@@ -1,60 +1,36 @@
 <p>Bienvenue dans la connexion !</p>
 
 <?php
-//récupération des champs de formulaire
-$pseudo = null;
-$password = null;
-if(isset($_POST['pseudo']) ){$pseudo=trim($_POST['pseudo']);}
-if(isset($_POST['password']) ){$password=trim($_POST['password']);}
 
-//Definition des messages d'erreur
+require_once('../model/User.php');
+require_once('../tools/FileReader.php');
+
+//récupération des champs de formulaire
+
+$user = null; 
 $Erreurs = array();
 
-//Chemin du fichier utilisateurs
-$filePath = '../data/utilisateurs.txt';
-
-// On ouvre le fichier ou on le crée s'il existe pas
-$userFile = fopen("".$filePath, 'a+');
+if(isset($_POST['pseudo']) &&  isset($_POST['password'])){
+	$user = new User(trim($_POST['pseudo']),trim($_POST['password']));
+} else{
+	$Erreurs['user'] = "Veuillez saisir tous vos identifiants ! ";
+	echo "<div>Veuillez saisir tous vos identifiants !</div>";
+}
 
 // Verification du pseudo 
-if(($pseudo != null && $pseudo != "") && ($password != null && $password != "")) {
-	$pseudotrouve = false;
-	$passwordMatch = false;	
-	// Test de l'attribution du pseudo 
-	while(!feof($userFile)) {
-        //Lecture d'une ligne
-		$line = fgets($userFile);
-        //Separation de la ligne sur le charactere ','
-		$splittedLine = explode(",", $line);
-		$PseudoBase = trim($splittedLine[1]);
-		$PasswordBase = trim($splittedLine[2]);
-		//Test de la présence du pseudo en deuxième position de la ligne
-		if ($PseudoBase == $pseudo){
-			$pseudotrouve = true;
-			if($PasswordBase == $password){
-				$passwordMatch = true;
-			}
-		}
-    }
-	if($pseudotrouve){
-		echo "<div>Pseudo reconnu</div>";
-		if($passwordMatch){
-			echo "<div>Mot de passe ok</div>";
-		} else {
-			$Erreurs['password'] = "Mot de passe erroné ";
-			echo "<div>Mot de passe faux !</div>";
-			echo "<div>Cassez vous d'ici!</div>";
-		}
+if ($user->hasPseudo() && ($user->hasPassword())){
+	$fileReader = new FileReader('../data/utilisateurs.txt',",");
+	$passwordMatch = $fileReader -> find($user->getPseudo(),1,$user->getPassword(),2);	
+	
+	if($passwordMatch){
+		echo "<div>Vous êtes connectez !</div>";
 	} else {
-		echo "<div>Pseudo non reconnu</div>";
+		echo "<div>Pseudo ou mot de passe incorrecte !</div>";
 		echo "<div>Cassez vous d'ici!</div>";
-		$Erreurs['user'] = "Pseudo inconnu ! ";
+		$Erreurs['user'] = "Pseudo ou mot de passe incorrecte !";
 	}	
 } else {
 		$Erreurs['user'] = "Veuillez saisir tous vos identifiants ! ";
 		echo "<div>Veuillez saisir tous vos identifiants !</div>";
 }
-
-// On ferme le fichier
-fclose($userFile);
 ?>
