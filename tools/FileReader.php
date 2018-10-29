@@ -1,4 +1,4 @@
-<?php 
+<?php  
 class FileReader { 
     private $filePath; 
 	private $file;
