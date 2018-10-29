@@ -18,7 +18,7 @@ if(isset($_POST['pseudo']) &&  isset($_POST['password'])){
 }
 
 // Verification du pseudo 
-if ($user->hasPseudo() && ($user->hasPassword())){
+if ($user->isValidForConnect()){
 	$fileReader = new FileReader('../data/utilisateurs.txt',",");
 	$passwordMatch = $fileReader -> find($user->getPseudo(),1,$user->getPassword(),2);	
 	
@@ -30,7 +30,7 @@ if ($user->hasPseudo() && ($user->hasPassword())){
 		$Erreurs['user'] = "Pseudo ou mot de passe incorrecte !";
 	}	
 } else {
-		$Erreurs['user'] = "Veuillez saisir tous vos identifiants ! ";
+		$Erreurs['user'] = "Identifiant(s) manquant(s) ou incorrecte(s) ";
 		echo "<div>Veuillez saisir tous vos identifiants !</div>";
 }
 ?>
