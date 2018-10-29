@@ -49,7 +49,7 @@ class User {
 	}
 	
 	function isPasswordValid() : bool{
-		return true;
+		return preg_match('#^(?=.*[a-z])(?=.*[A-Z])(?=.*[0-9])(?=.*\W).{8,}$#', $this->password);
 	}
 	
 	function getAsJson() : string{
